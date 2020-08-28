@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.0.2)
 project(nrg_gas_utilities)
 
 ## Compile as C++11, supported in ROS Kinetic and newer
-# add_compile_options(-std=c++11)
+add_compile_options(-std=c++11)
 
 ## Find catkin macros and libraries
 ## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)
@@ -111,7 +111,7 @@ generate_messages(
 catkin_package(
  INCLUDE_DIRS include
  LIBRARIES nrg_gas
-CATKIN_DEPENDS roscpp rospy std_msgs geometry_msgs message_runtime
+ CATKIN_DEPENDS roscpp rospy std_msgs geometry_msgs message_runtime
 #  DEPENDS system_lib
 )
 
@@ -129,6 +129,7 @@ include_directories(
 ## Declare a C++ library
 add_library(nrg_gas 
             src/nrg_gas.cpp)
+
 
 ## Add cmake target dependencies of the library
 ## as an example, code may need to be generated before libraries
@@ -202,11 +203,8 @@ target_link_libraries(utilities_main
 ## Testing ##
 #############
 
-## Add gtest based cpp test target and link libraries
-# catkin_add_gtest(${PROJECT_NAME}-test test/test_nrg_gas_utilities.cpp)
-# if(TARGET ${PROJECT_NAME}-test)
-#   target_link_libraries(${PROJECT_NAME}-test ${PROJECT_NAME})
-# endif()
-
-## Add folders to be run by python nosetests
-# catkin_add_nosetests(test)
+if (CATKIN_ENABLE_TESTING)
+#  #### DECK TESTS #####
+#  catkin_add_gtest(test_wind_deck test/test_wind_deck.cpp)
+#  target_link_libraries(test_wind_deck nrg_gas_utilities ${catkin_LIBRARIES} ${rostest_LIBRARIES})
+endif()
