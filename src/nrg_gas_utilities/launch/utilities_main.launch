@@ -1,0 +1,35 @@
+<?xml version="1.0"?>
+<launch>
+    <node pkg="tf2_ros" type="static_transform_publisher" name="map_to_baselink_broadcaster" args="-20.0 -16.26418 0 0 0 1 map base_link" />
+    <node pkg="tf2_ros" type="static_transform_publisher" name="baselink_to_anemometer_broadcaster" args="-1 -1 0 0 0 0 1 base_link anemometer_link" />
+    
+    <arg name = "horizontal_dispersion_x" 
+         default = "0.22"/>
+    <arg name = "horizontal_dispersion_y" 
+         default = "0.0001"/>
+    <arg name = "horizontal_dispersion_z" 
+         default = "0.5"/>
+    <arg name = "vertical_dispersion_x" 
+         default = "0.2"/>    
+    <arg name = "vertical_dispersion_y" 
+         default = "0.0"/>    
+    <arg name = "vertical_dispersion_z" 
+         default = "0.0"/>    
+    
+
+    <node pkg="nrg_gas_utilities"  type="utilities_main" name="utilities_main" output="screen">
+        
+        <param name = "horizontal_dispersion_x" 
+               value = "$(arg horizontal_dispersion_x)"/>  
+        <param name = "horizontal_dispersion_y" 
+               value = "$(arg horizontal_dispersion_y)"/>  
+        <param name = "horizontal_dispersion_z" 
+               value = "$(arg horizontal_dispersion_z)"/>  
+        <param name = "vertical_dispersion_x" 
+               value = "$(arg vertical_dispersion_x)"/> 
+        <param name = "vertical_dispersion_y" 
+               value = "$(arg vertical_dispersion_y)"/>  
+        <param name = "vertical_dispersion_z" 
+               value = "$(arg vertical_dispersion_z)"/>  
+    </node>
+</launch>
