@@ -22,14 +22,16 @@ using geometry_msgs::Vector3Stamped;
 class NRGGas
 {
 public: //TODO make protected
-    NRGGas(ros::NodeHandle *nh);
+    NRGGas();
 
-    double calculateConcentration(const GasSource &gs) const;
+    double calculateConcentration(const GasSource &gs, const Vector3Stamped &wind) const;
 
-    WindParameters wp_;   
+    ros::NodeHandle private_nh_;
 
     tf2_ros::Buffer tfBuffer_;
     tf2_ros::TransformListener tfListener; 
+
+    WindParameters wp_;   
 
     std::deque<Vector3Stamped> wind_measurements_;
     std::deque<GasConcentration> gas_measurements_;
