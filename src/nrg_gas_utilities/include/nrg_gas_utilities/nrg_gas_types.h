@@ -5,7 +5,7 @@
 namespace nrg_gas
 {
 
-
+//TODO make a particle
     
 } // namespace nrg_gas
 
