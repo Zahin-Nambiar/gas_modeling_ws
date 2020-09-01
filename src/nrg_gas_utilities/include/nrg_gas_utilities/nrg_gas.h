@@ -5,8 +5,10 @@
 #include <nrg_gas_utilities/WindParameters.h>
 #include <nrg_gas_utilities/GasConcentration.h>
 #include <geometry_msgs/Vector3Stamped.h>
+#include <geometry_msgs/Vector3.h>
 #include <geometry_msgs/TransformStamped.h>
 #include <geometry_msgs/PointStamped.h>
+#include <geometry_msgs/Point.h>
 
 
 #include <ros/ros.h>
@@ -21,8 +23,10 @@ using nrg_gas_utilities::GasSource;
 using nrg_gas_utilities::WindParameters;
 using nrg_gas_utilities::GasConcentration;
 using geometry_msgs::Vector3Stamped;
+using geometry_msgs::Vector3;
 using geometry_msgs::TransformStamped;
 using geometry_msgs::PointStamped;
+using geometry_msgs::Point;
 
 
 class NRGGas
@@ -42,7 +46,7 @@ public: //TODO make protected
     std::deque<Vector3Stamped> wind_measurements_;
     std::deque<GasConcentration> gas_measurements_;
 private:
-    void calculateSourceTransform(const PointStamped& source, const Vector3Stamped& wind, TransformStamped& map_to_anemometer) const;
+    Point calculateSourceTransform(const PointStamped& source, const Vector3Stamped& wind, const TransformStamped& map_to_anemometer) const;
 };
     
 } // namespace nrg_gas
