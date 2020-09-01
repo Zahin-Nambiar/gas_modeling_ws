@@ -25,27 +25,37 @@ NRGGas::NRGGas()
 //23.771413852933193 1.0 -2.0
 double NRGGas::calculateConcentration( const GasSource &gs, const Vector3Stamped &wind, TransformStamped map_to_anemometer ) const
 {  
-    calculateSourceTransform(gs.position, wind, map_to_anemometer);
+    Point source_local_point;
+    source_local_point = calculateSourceTransform(gs.position, wind, map_to_anemometer);
+    
+
     //If upwind- conc = 0 return
     //Else calculate conc return
     return 0.0;
 }
 
-void NRGGas::calculateSourceTransform(const PointStamped& source, const Vector3Stamped& wind, TransformStamped& map_to_anemometer) const
+Point NRGGas::calculateSourceTransform(const PointStamped& source, const Vector3Stamped& wind, const TransformStamped& map_to_anemometer) const
 {
-    map_to_anemometer.transform.translation.x -= source.point.x;
-    map_to_anemometer.transform.translation.y -= source.point.y;
-    map_to_anemometer.transform.translation.z -= source.point.z;
+    Point t_in;
+    // Source local translation
+    t_in.x = map_to_anemometer.transform.translation.x - source.point.x;
+    t_in.y = map_to_anemometer.transform.translation.y - source.point.y;
+    t_in.z = map_to_anemometer.transform.translation.z - source.point.z;
 
     tf2::Quaternion q_wind_azimuth, q_base;
-    q_wind_azimuth.setRPY( 0, 0, atan2(wind.vector.y, wind.vector.x) );
-    tf2::convert( map_to_anemometer.transform.rotation , q_base );
+    q_wind_azimuth.setRPY( 0, 
+                           0, 
+                           atan2(wind.vector.y, wind.vector.x) );       // Wind azimuth in anemometer frame
+    tf2::convert( map_to_anemometer.transform.rotation,
+                  q_base );                                             // Anemometer rotation in map frame
+    TransformStamped rot;
+    rot.transform.rotation = tf2::toMsg( q_wind_azimuth*q_base );       // Wind azimuth transformed to map frame
 
-    map_to_anemometer.transform.rotation = tf2::toMsg( q_wind_azimuth*q_base );
+    Point t_out;
+    // Source local rotation
+    tf2::doTransform(t_in, t_out, rot); 
 
-    std::cout<<"Function"<<std::endl;
-    std::cout<<map_to_anemometer.transform<<std::endl;
-
+    return t_out;
 }
 
 } // namespace nrg_gas
