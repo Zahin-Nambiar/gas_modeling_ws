@@ -19,7 +19,6 @@ NRGGas::NRGGas()
     private_nh_.param( "vertical_dispersion_x", wp_.vertical.x, 0.1 );
     private_nh_.param( "vertical_dispersion_y", wp_.vertical.y, 0.1 );
     private_nh_.param( "vertical_dispersion_z", wp_.vertical.z, 0.1 );
-
 }
 
 //23.771413852933193 1.0 -2.0
@@ -27,11 +26,23 @@ double NRGGas::calculateConcentration( const GasSource &gs, const Vector3Stamped
 {  
     Point source_local_point;
     source_local_point = calculateSourceTransform(gs.position, wind, map_to_anemometer);
-    
 
-    //If upwind- conc = 0 return
-    //Else calculate conc return
-    return 0.0;
+    std::cout<<source_local_point<<std::endl;
+    if( source_local_point.x<0 )
+    {
+        //Downwind concentration is zero if the measurement point is not downwind of source 
+        std::cout<<"Not downwind"<<std::endl;
+        return 0.0;
+    }else{
+        std::cout<<"Downwind"<<std::endl;
+        const double sy = wp_.horizontal.x*source_local_point.x*std::pow( 1.0+wp_.horizontal.y*source_local_point.x, -wp_.horizontal.z );
+        const double sz = wp_.vertical.x*source_local_point.x*std::pow( 1.0+wp_.vertical.y*source_local_point.x, -wp_.vertical.z );
+        const double expy = std::exp(-( source_local_point.y*source_local_point.y )/( 2*sy*sy ));  
+        const double expz = std::exp(-( source_local_point.z*source_local_point.z )/( 2*sz*sz ));
+        const double norm = ( gs.rate/std::sqrt(wind.vector.x*wind.vector.x + wind.vector.y*wind.vector.y) )/( 2*M_PI*sy*sz );
+        return norm*expy*expz;
+    }
+
 }
 
 Point NRGGas::calculateSourceTransform(const PointStamped& source, const Vector3Stamped& wind, const TransformStamped& map_to_anemometer) const
