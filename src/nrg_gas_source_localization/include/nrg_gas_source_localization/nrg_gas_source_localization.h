@@ -18,8 +18,17 @@ class NRGGasSourceLocalization: protected NRGGas
 {
 public:
     NRGGasSourceLocalization();
+    void update(GasConcentration& gas_measurement, Vector3 wind_measurement);
 private:
+    void reweight();
+    void resample();
+    void isNeffLow();
+
     std::vector<Particle> particle_set_;
+
+    float state_space_[2][4];
+
+    bool initialized_;
 };
 
 } // namespace nrg_gas
