@@ -6,7 +6,8 @@
 namespace nrg_gas
 {
 
-std::vector<double> uniform_rn(int count){   
+std::vector<double> uniform_rn(int count)
+{   
     std::random_device rnd_device;
     std::mt19937 mersenne_engine {rnd_device()};  
     std::uniform_real_distribution<double> dist (0, 1.0);
@@ -23,7 +24,8 @@ std::vector<double> uniform_rn(int count){
     return rnv;
 }
 
-double uniform_rn(){   
+double uniform_rn()
+{   
     std::random_device rnd_device;
     std::mt19937 mersenne_engine {rnd_device()};  // Generates random doubles
     std::uniform_real_distribution<double> dist (0, 1.0);
@@ -32,7 +34,8 @@ double uniform_rn(){
 }
 
 
-double gaussian(double x, double mu, double sigma){
+double gaussian(double x, double mu, double sigma)
+{
     return ( 1/(std::sqrt(2*M_PI)*sigma) )*std::exp( -0.5*std::pow((x-mu)/sigma, 2) );
 }
 
