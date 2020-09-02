@@ -129,6 +129,8 @@ include_directories(
 ## Declare a C++ library
 add_library(nrg_gas 
             src/${PROJECT_NAME}/nrg_gas.cpp)
+add_library(nrg_gas_utilities 
+            src/${PROJECT_NAME}/nrg_gas_utilities.cpp)
 
 
 ## Add cmake target dependencies of the library
