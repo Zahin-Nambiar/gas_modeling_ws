@@ -30,6 +30,7 @@ private:
     int np_min_;
 
     double R_; 
+    double Q_;
 };
 
 } // namespace nrg_gas
