@@ -18,9 +18,9 @@ class NRGGasSourceLocalization: protected NRGGas
 {
 public:
     NRGGasSourceLocalization();
-    void update(GasConcentration& gas_measurement, Vector3 wind_measurement);
+    void update(GasConcentration& gas_measurement, Vector3& wind_measurement);
 private:
-    void initialize(int np);
+    void initialize(int& np);
     void reweight();
     void resample();
     void isNeffLow();
