@@ -17,7 +17,8 @@ NRGGasSourceLocalization::NRGGasSourceLocalization()
     int np;
     private_nh_.param( "minimum_number_of_particles", np); 
     private_nh_.param( "minimum_number_of_particles", np_min_); 
-    private_nh_.param( "minimum_number_of_particles", R_, 1.0); 
+    private_nh_.param( "measurement_noise", R_, 1.0); 
+    private_nh_.param( "process_noise", Q_, 1.0); 
 
 
     initialize(np);
@@ -74,5 +75,41 @@ void NRGGasSourceLocalization::reweight(GasConcentration& gas_measurement, Vecto
     }
     return;
 }
+
+void NRGGasSourceLocalization::resample()
+{
+    // See Multinomial Resampling in: "Particle filters and resampling techniques: Importance in computational complexity analysis" IEEE 2013
+    int np = particle_set_.size();
+    std::vector<Particle> new_particle_set;
+    new_particle_set.resize( np );
+    
+    // Find incremental sum of weight vector
+    std::vector<double> weight_sum{0.0};    //Final size will be np+1 elements
+    for( const auto& particle: particle_set_ )
+    {
+        weight_sum.push_back( weight_sum.back() + particle.weight ); 
+    }
+    
+    // Pick a new particles from old particle set 
+    for( auto& new_particle: new_particle_set )
+    {        
+        const double pick = uniform_rn();
+        for(int i = 0; i < np; i++)
+        {
+            if( pick > weight_sum[i] &&
+                pick < weight_sum[i+1] )
+            {
+                new_particle = particle_set_[i];
+                new_particle.weight = 1.0/np;
+                new_particle.source.position.point.x += uniform_rn()*Q_;
+                new_particle.source.position.point.y += uniform_rn()*Q_;
+                new_particle.source.position.point.z += uniform_rn()*Q_;
+            }
+        }
+    }
+    particle_set_ = std::move(new_particle_set);
+    return;
+}
+
 
 } // namespace nrg_gas
