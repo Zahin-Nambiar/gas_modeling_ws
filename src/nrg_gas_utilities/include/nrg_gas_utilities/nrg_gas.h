@@ -31,7 +31,7 @@ using geometry_msgs::Point;
 
 class NRGGas
 {
-public: //TODO make protected
+protected: 
     NRGGas();
 
     double calculateConcentration(const GasSource &gs, const Vector3Stamped &wind, const TransformStamped map_to_anemometer) const;
