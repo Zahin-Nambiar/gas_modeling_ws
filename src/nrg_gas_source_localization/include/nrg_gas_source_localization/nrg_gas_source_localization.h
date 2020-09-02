@@ -20,15 +20,14 @@ public:
     NRGGasSourceLocalization();
     void update(GasConcentration& gas_measurement, Vector3 wind_measurement);
 private:
+    void initialize(int np);
     void reweight();
     void resample();
     void isNeffLow();
 
     std::vector<Particle> particle_set_;
-
-    float state_space_[2][4];
-
-    bool initialized_;
+    std::vector<std::vector<double>> state_space_;
+    int np_min_;
 };
 
 } // namespace nrg_gas
