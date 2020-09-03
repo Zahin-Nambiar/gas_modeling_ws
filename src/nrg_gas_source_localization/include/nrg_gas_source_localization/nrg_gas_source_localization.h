@@ -23,7 +23,7 @@ private:
     void initialize(const int& np);
     void reweight( const GasConcentration& gas_measurement, const Vector3Stamped& wind_measurement );
     void resample();
-    void isNeffLow();
+    bool isDegenerate();
 
     std::vector<Particle> particle_set_;
     std::vector<std::vector<double>> state_space_;

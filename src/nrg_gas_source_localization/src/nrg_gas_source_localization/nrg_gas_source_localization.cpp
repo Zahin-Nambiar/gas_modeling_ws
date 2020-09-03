@@ -10,16 +10,15 @@ NRGGasSourceLocalization::NRGGasSourceLocalization()
 : NRGGas(),
   state_space_( 4, std::vector<double>(2) )
 {   
-    private_nh_.getParam( "state_space_bounds_x", state_space_[0]); 
-    private_nh_.getParam( "state_space_bounds_y", state_space_[1]); 
-    private_nh_.getParam( "state_space_bounds_z", state_space_[2]); 
-    private_nh_.getParam( "state_space_bounds_rate", state_space_[3]); 
+    private_nh_.getParam( "state_space_bounds_x", state_space_[0] ); 
+    private_nh_.getParam( "state_space_bounds_y", state_space_[1] ); 
+    private_nh_.getParam( "state_space_bounds_z", state_space_[2] ); 
+    private_nh_.getParam( "state_space_bounds_rate", state_space_[3] ); 
     int np;
-    private_nh_.param( "minimum_number_of_particles", np); 
-    private_nh_.param( "minimum_number_of_particles", np_min_); 
-    private_nh_.param( "measurement_noise", R_, 1.0); 
-    private_nh_.param( "process_noise", Q_, 1.0); 
-
+    private_nh_.param( "minimum_number_of_particles", np ); 
+    private_nh_.param( "minimum_number_of_particles", np_min_ ); 
+    private_nh_.param( "measurement_noise", R_, 1.0 ); 
+    private_nh_.param( "process_noise", Q_, 1.0 ); 
 
     initialize(np);
 }
@@ -27,13 +26,18 @@ NRGGasSourceLocalization::NRGGasSourceLocalization()
 void NRGGasSourceLocalization::update( const GasConcentration& gas_measurement, 
                                        const Vector3Stamped& wind_measurement )
 {
-
+    reweight(gas_measurement, wind_measurement);
+    if( isDegenerate() )
+    {
+        resample();
+    }
+    return;
 }
 
 void NRGGasSourceLocalization::initialize( const int& np )
 {
-    particle_set_.resize(np);
-    for(auto& particle: particle_set_)
+    particle_set_.resize( np );
+    for( auto& particle: particle_set_ )
     {
         particle.weight = 1.0/np;
         auto rnv = uniform_rn(4);
@@ -55,9 +59,9 @@ void NRGGasSourceLocalization::reweight( const GasConcentration& gas_measurement
                                                         ros::Time(0), 
                                                         ros::Duration(0.1) );
     }
-    catch (tf2::TransformException &ex) {
-      ROS_WARN_NAMED("NRGGasSourceLocalization::reweight()","%s",ex.what());
-      ros::Duration(1.0).sleep();
+    catch ( tf2::TransformException &ex ) {
+      ROS_WARN_NAMED( "NRGGasSourceLocalization::reweight()","%s",ex.what() );
+      ros::Duration( 1.0 ).sleep();
       return;
     }
 
@@ -65,12 +69,11 @@ void NRGGasSourceLocalization::reweight( const GasConcentration& gas_measurement
     // Reweight particles based on similarity between measured concentration and theoretical concentration
     for( auto& particle: particle_set_ )
     {
-        particle.weight *= gaussian( calculateConcentration(particle.source, 
-                                                            wind_measurement, 
-                                                            map_to_anemometer_tf ), 
+        particle.weight *= gaussian( calculateConcentration( particle.source, 
+                                                             wind_measurement, 
+                                                             map_to_anemometer_tf ), 
                                      gas_measurement.concentration,
                                      R_ );   
-
         if( particle.weight > max_weight ) max_weight = particle.weight;
     }
     
@@ -121,8 +124,25 @@ void NRGGasSourceLocalization::resample()
             }
         }
     }
-    particle_set_ = std::move(new_particle_set);
+    particle_set_ = std::move( new_particle_set );
     return;
+}
+
+bool NRGGasSourceLocalization::isDegenerate()
+{
+    double sum = 0;
+    for( auto& particle: particle_set_)
+    {
+        sum += particle.weight*particle.weight;
+    }
+    
+    if( 1.0/sum < np_min_ )
+    {    
+        // Degenerate
+        return 1;
+    }
+    // Not degenerate
+    return 0;
 }
 
 } // namespace nrg_gas
