@@ -24,7 +24,13 @@ NRGGasSourceLocalization::NRGGasSourceLocalization()
     initialize(np);
 }
 
-void NRGGasSourceLocalization::initialize(int& np)
+void NRGGasSourceLocalization::update( const GasConcentration& gas_measurement, 
+                                       const Vector3Stamped& wind_measurement )
+{
+
+}
+
+void NRGGasSourceLocalization::initialize( const int& np )
 {
     particle_set_.resize(np);
     for(auto& particle: particle_set_)
@@ -38,13 +44,16 @@ void NRGGasSourceLocalization::initialize(int& np)
     }
     return;
 }
-//calculateConcentration( const GasSource &gs, const Vector3Stamped &wind, TransformStamped map_to_anemometer )
-void NRGGasSourceLocalization::reweight(GasConcentration& gas_measurement, Vector3Stamped& wind_measurement)
+
+void NRGGasSourceLocalization::reweight( const GasConcentration& gas_measurement, 
+                                         const Vector3Stamped& wind_measurement )
 {   
     TransformStamped map_to_anemometer_tf;
     try{
-      map_to_anemometer_tf = tfBuffer_.lookupTransform("map", wind_measurement.header.frame_id,
-                               ros::Time(0), ros::Duration(0.25) );
+      map_to_anemometer_tf = tfBuffer_.lookupTransform( "map", 
+                                                        wind_measurement.header.frame_id,
+                                                        ros::Time(0), 
+                                                        ros::Duration(0.1) );
     }
     catch (tf2::TransformException &ex) {
       ROS_WARN_NAMED("NRGGasSourceLocalization::reweight()","%s",ex.what());
@@ -56,7 +65,12 @@ void NRGGasSourceLocalization::reweight(GasConcentration& gas_measurement, Vecto
     // Reweight particles based on similarity between measured concentration and theoretical concentration
     for( auto& particle: particle_set_ )
     {
-        particle.weight *= gaussian( calculateConcentration(particle.source, wind_measurement, map_to_anemometer_tf ), gas_measurement.concentration, R_ );   
+        particle.weight *= gaussian( calculateConcentration(particle.source, 
+                                                            wind_measurement, 
+                                                            map_to_anemometer_tf ), 
+                                     gas_measurement.concentration,
+                                     R_ );   
+
         if( particle.weight > max_weight ) max_weight = particle.weight;
     }
     
@@ -79,7 +93,7 @@ void NRGGasSourceLocalization::reweight(GasConcentration& gas_measurement, Vecto
 void NRGGasSourceLocalization::resample()
 {
     // See Multinomial Resampling in: "Particle filters and resampling techniques: Importance in computational complexity analysis" IEEE 2013
-    int np = particle_set_.size();
+    const int np = particle_set_.size();
     std::vector<Particle> new_particle_set;
     new_particle_set.resize( np );
     
@@ -110,6 +124,5 @@ void NRGGasSourceLocalization::resample()
     particle_set_ = std::move(new_particle_set);
     return;
 }
-
 
 } // namespace nrg_gas

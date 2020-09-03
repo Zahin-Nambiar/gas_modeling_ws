@@ -18,10 +18,10 @@ class NRGGasSourceLocalization: protected NRGGas
 {
 public:
     NRGGasSourceLocalization();
-    void update(GasConcentration& gas_measurement, Vector3Stamped& wind_measurement);
+    void update( const GasConcentration& gas_measurement, const Vector3Stamped& wind_measurement );
 private:
-    void initialize(int& np);
-    void reweight(GasConcentration& gas_measurement, Vector3Stamped& wind_measurement);
+    void initialize(const int& np);
+    void reweight( const GasConcentration& gas_measurement, const Vector3Stamped& wind_measurement );
     void resample();
     void isNeffLow();
 
