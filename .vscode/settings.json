@@ -57,6 +57,9 @@
         "hash_set": "cpp",
         "slist": "cpp",
         "mutex": "cpp",
-        "valarray": "cpp"
+        "valarray": "cpp",
+        "regex": "cpp",
+        "*.ipp": "cpp",
+        "random": "cpp"
     }
 }
