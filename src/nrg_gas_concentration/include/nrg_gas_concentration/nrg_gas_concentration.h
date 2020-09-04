@@ -12,6 +12,8 @@ namespace nrg_gas
 class NRGGasConcentration: protected NRGGas
 {
 public:
+
+private:
     bool addSource( SetSource::Request& req, SetSource::Response& res );
 
     // bool getConcentration( GetConcentration::Request &req, GetConcentration::Response &res );
@@ -20,11 +22,7 @@ public:
 
     std::vector<nrg_gas_utilities::GasSource> sources_;
 
-    ros::ServiceServer set_gas_source_srv_, 
-    //                    get_concentration_srv_, 
-    //                    clear_sources_srv_ ;
-
-private:
+    ros::ServiceServer set_gas_source_srv_;
 };
 
 
