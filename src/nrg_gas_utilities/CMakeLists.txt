@@ -110,8 +110,8 @@ generate_messages(
 ## DEPENDS: system dependencies of this project that dependent projects also need
 catkin_package(
  INCLUDE_DIRS include
- LIBRARIES nrg_gas
- CATKIN_DEPENDS roscpp rospy std_msgs geometry_msgs message_runtime
+ LIBRARIES nrg_gas nrg_gas_utilities 
+ CATKIN_DEPENDS roscpp rospy std_msgs geometry_msgs message_runtime tf2 tf2_ros
 #  DEPENDS system_lib
 )
 
