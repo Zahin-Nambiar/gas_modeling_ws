@@ -60,7 +60,7 @@ find_package(catkin REQUIRED COMPONENTS
 add_service_files(
   FILES
   SetSource.srv
-  #Service2.srv
+  GetConcentration.srv
 )
 
 ## Generate actions in the 'action' folder
