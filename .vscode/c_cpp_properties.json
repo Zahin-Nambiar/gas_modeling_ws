@@ -3,7 +3,8 @@
         {
             "name": "Linux",
             "includePath": [
-                "${workspaceFolder}/**",
+                "${workspaceFolder}/devel/**",
+                "${workspaceFolder}/src/**",
                 "/opt/ros/kinetic/**"
             ],
             "defines": [],
