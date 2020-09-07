@@ -47,8 +47,8 @@ visualization_msgs::Marker createSourceMarker(const GasSource& source)
   visualization_msgs::Marker marker;
   
   marker.header = source.position.header;
-  marker.ns = "gas_sources";
   marker.pose.position = source.position.point;
+  marker.pose.orientation.w = 1;
   marker.scale.x = 0.1;
   marker.scale.y = 0.1;
   marker.scale.z = 0.1;
