@@ -31,6 +31,10 @@ private:
 
     double R_; 
     double Q_;
+
+    ros::NodeHandle nh_;
+    
+    ros::Publisher visualization_pub_;
 };
 
 } // namespace nrg_gas

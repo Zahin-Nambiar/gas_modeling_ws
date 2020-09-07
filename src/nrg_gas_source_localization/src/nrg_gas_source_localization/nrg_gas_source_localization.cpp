@@ -1,8 +1,10 @@
 #include <nrg_gas_source_localization/nrg_gas_source_localization.h>
 #include <nrg_gas_utilities/nrg_gas_utilities.h>
 
+#include <visualization_msgs/MarkerArray.h>
 
 
+using visualization_msgs::MarkerArray;
 namespace nrg_gas
 {
 
@@ -10,6 +12,8 @@ NRGGasSourceLocalization::NRGGasSourceLocalization()
 : NRGGas(),
   state_space_( 4, std::vector<double>(2) )
 {   
+    visualization_pub_ = nh_.advertise<MarkerArray>("/particle_cloud_visualization", 10, false);
+
     private_nh_.getParam( "state_space_bounds_x", state_space_[0] ); 
     private_nh_.getParam( "state_space_bounds_y", state_space_[1] ); 
     private_nh_.getParam( "state_space_bounds_z", state_space_[2] ); 
