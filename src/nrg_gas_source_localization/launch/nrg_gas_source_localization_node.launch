@@ -24,7 +24,7 @@
           <!--NRGGasSourceLocalization-->
           <rosparam param = "state_space_bounds_x">    [-100.0, 100.0]     </rosparam>
           <rosparam param = "state_space_bounds_y">    [-100.0, 100.0]     </rosparam>
-          <rosparam param = "state_space_bounds_z">    [-5.0, 25.0]        </rosparam>
+          <rosparam param = "state_space_bounds_z">    [0.0, 25.0]        </rosparam>
           <rosparam param = "state_space_bounds_rate"> [0.0, 20000.0]      </rosparam>
           <param name = "number_of_particles"          value = "$(arg number_of_particles)"         />  
           <param name = "minimum_number_of_particles"  value = "$(arg minimum_number_of_particles)" /> 
