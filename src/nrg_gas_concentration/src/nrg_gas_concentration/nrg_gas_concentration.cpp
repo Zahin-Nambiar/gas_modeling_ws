@@ -29,8 +29,12 @@ bool NRGGasConcentration::addSource( SetSource::Request& req, SetSource::Respons
     }
 
     sources_.push_back(req.source);
+    
     visualization_msgs::Marker source_marker = createSourceMarker(req.source);
     source_marker.id = sources_.size();
+    source_marker.ns = "simulated_sources";
+    source_marker.color.g = 1;
+
     visualization_pub_.publish(source_marker);
     return 1;
 }
