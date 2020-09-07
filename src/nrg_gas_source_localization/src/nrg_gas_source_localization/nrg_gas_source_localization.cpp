@@ -1,10 +1,9 @@
 #include <nrg_gas_source_localization/nrg_gas_source_localization.h>
 #include <nrg_gas_utilities/nrg_gas_utilities.h>
 
-#include <visualization_msgs/MarkerArray.h>
-
-
 using visualization_msgs::MarkerArray;
+
+
 namespace nrg_gas
 {
 
@@ -12,15 +11,18 @@ NRGGasSourceLocalization::NRGGasSourceLocalization()
 : NRGGas(),
   state_space_( 4, std::vector<double>(2) )
 {   
-    visualization_pub_ = nh_.advertise<MarkerArray>("/particle_cloud_visualization", 10, false);
+    visualization_pub_ = nh_.advertise<MarkerArray>("/particle_set_visualization", 10, true);
 
     private_nh_.getParam( "state_space_bounds_x", state_space_[0] ); 
     private_nh_.getParam( "state_space_bounds_y", state_space_[1] ); 
     private_nh_.getParam( "state_space_bounds_z", state_space_[2] ); 
     private_nh_.getParam( "state_space_bounds_rate", state_space_[3] ); 
+    
     int np;
-    private_nh_.param( "minimum_number_of_particles", np ); 
-    private_nh_.param( "minimum_number_of_particles", np_min_ ); 
+    private_nh_.param( "number_of_particles", np, 2000 ); 
+    private_nh_.param( "minimum_number_of_particles", np_min_, 500 );
+    ROS_DEBUG_COND_NAMED( np_min_> np, "NRGGasSourceLocalization::NRGGasSourceLocalization()", 
+                          "Number of particles is less than the minimum number of particles, resampling will be triggered by default" ); 
     private_nh_.param( "measurement_noise", R_, 1.0 ); 
     private_nh_.param( "process_noise", Q_, 1.0 ); 
 
@@ -30,6 +32,8 @@ NRGGasSourceLocalization::NRGGasSourceLocalization()
 void NRGGasSourceLocalization::update( const GasConcentration& gas_measurement, 
                                        const Vector3Stamped& wind_measurement )
 {
+    visualization_pub_.publish(createParticleSetVisualization());
+
     reweight(gas_measurement, wind_measurement);
     if( isDegenerate() )
     {
@@ -44,6 +48,7 @@ void NRGGasSourceLocalization::initialize( const int& np )
     for( auto& particle: particle_set_ )
     {
         particle.weight = 1.0/np;
+        particle.source.position.header.frame_id = "map";
         auto rnv = uniform_rn(4);
         particle.source.position.point.x = state_space_[0][0] + rnv[0]*(state_space_[0][1] - state_space_[0][0]);
         particle.source.position.point.y = state_space_[1][0] + rnv[1]*(state_space_[1][1] - state_space_[1][0]);
@@ -147,6 +152,20 @@ bool NRGGasSourceLocalization::isDegenerate()
     }
     // Not degenerate
     return 0;
+}
+
+visualization_msgs::MarkerArray NRGGasSourceLocalization::createParticleSetVisualization()
+{
+    int id{0};
+    MarkerArray particle_set_visualization;
+    for( const auto& particle: particle_set_)
+    {
+        particle_set_visualization.markers.push_back( createSourceMarker(particle.source) );
+        particle_set_visualization.markers.back().id = id;  //Each marker must have unique ID
+        particle_set_visualization.markers.back().ns = "particles"; // Unique namespace 
+        ++id;
+    }
+    return particle_set_visualization;
 }
 
 } // namespace nrg_gas

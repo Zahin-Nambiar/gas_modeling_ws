@@ -1,16 +1,16 @@
 #include <nrg_gas_utilities/nrg_gas.h>
 #include <nrg_gas_utilities/GasSource.h>
 
+#include <visualization_msgs/MarkerArray.h>
+
 #include <vector>
 
 namespace nrg_gas
 {
 
-using nrg_gas_utilities::GasSource;
-
 struct Particle
 {
-    GasSource source;
+    nrg_gas_utilities::GasSource source;
     double weight;
 };
 
@@ -33,8 +33,11 @@ private:
     double Q_;
 
     ros::NodeHandle nh_;
-    
+
     ros::Publisher visualization_pub_;
+
+    visualization_msgs::MarkerArray createParticleSetVisualization();
+
 };
 
 } // namespace nrg_gas
