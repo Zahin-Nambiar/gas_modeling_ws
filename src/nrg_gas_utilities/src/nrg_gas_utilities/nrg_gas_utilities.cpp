@@ -3,6 +3,8 @@
 #include <random>
 #include <algorithm>
 
+using nrg_gas_utilities::GasSource;
+
 namespace nrg_gas
 {
 
@@ -37,6 +39,25 @@ double uniform_rn()
 double gaussian(double x, double mu, double sigma)
 {
     return ( 1/(std::sqrt(2*M_PI)*sigma) )*std::exp( -0.5*std::pow((x-mu)/sigma, 2) );
+}
+
+
+visualization_msgs::Marker createSourceMarker(const GasSource& source)
+{
+  visualization_msgs::Marker marker;
+  
+  marker.header = source.position.header;
+  marker.ns = "gas_sources";
+  marker.pose.position = source.position.point;
+  marker.scale.x = 0.1;
+  marker.scale.y = 0.1;
+  marker.scale.z = 0.1;
+  marker.type = visualization_msgs::Marker::CYLINDER;
+  marker.action = visualization_msgs::Marker::ADD;
+  marker.color.r = 1;
+  marker.color.a = 1;
+  
+  return marker;
 }
 
 } // namespace nrg_gas

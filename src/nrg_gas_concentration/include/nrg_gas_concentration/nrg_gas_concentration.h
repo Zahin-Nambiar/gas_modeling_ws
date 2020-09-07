@@ -32,9 +32,7 @@ private:
                        get_gas_concentration_srv_;
 
     std::vector<nrg_gas_utilities::GasSource> sources_;
-
-    visualization_msgs::Marker createSourceMarker(const nrg_gas_utilities::GasSource& source);
-    
+ 
 };
 
 
