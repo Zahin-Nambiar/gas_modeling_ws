@@ -34,7 +34,6 @@ double NRGGas::calculateConcentration( const GasSource &gs, const AnemometerMsg 
         const double sz = wp_.vertical.x*source_local_point.x*std::pow( 1.0+wp_.vertical.y*source_local_point.x, -wp_.vertical.z );
         const double expy = std::exp(-( source_local_point.y*source_local_point.y )/( 2*sy*sy ));  
         const double expz = std::exp(-( source_local_point.z*source_local_point.z )/( 2*sz*sz ));
-        //const double norm = ( gs.rate/std::sqrt(wind.vector.x*wind.vector.x + wind.vector.y*wind.vector.y) )/( 2*M_PI*sy*sz );
         const double norm = ( gs.rate/wind.speed )/( 2*M_PI*sy*sz );
         return norm*expy*expz;
     }
@@ -53,7 +52,7 @@ Point NRGGas::calculateSourceTransform(const PointStamped& source, const Anemome
     q_wind_azimuth.setRPY( 0, 
                            0, 
                            //2*M_PI-atan2(wind.vector.y, wind.vector.x)
-                           wind.azimuth);       // Wind azimuth in anemometer frame
+                           wind.azimuth);       // Wind azimuth in anemometer frame: IN PROGRESS OF CONFORMING
     tf2::convert( map_to_anemometer.transform.rotation,
                   q_base );                                             // Anemometer rotation in map frame
     TransformStamped rot;

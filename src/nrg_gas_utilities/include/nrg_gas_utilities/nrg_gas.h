@@ -5,8 +5,6 @@
 #include <nrg_gas_utilities/WindParameters.h>
 #include <nrg_gas_utilities/GasConcentration.h>
 #include <nrg_gas_utilities/AnemometerMsg.h>
-#include <geometry_msgs/Vector3Stamped.h>
-#include <geometry_msgs/Vector3.h>
 #include <geometry_msgs/TransformStamped.h>
 #include <geometry_msgs/PointStamped.h>
 #include <geometry_msgs/Point.h>
@@ -25,8 +23,6 @@ using nrg_gas_utilities::WindParameters;
 using nrg_gas_utilities::GasConcentration;
 using nrg_gas_utilities::AnemometerMsg;
 
-using geometry_msgs::Vector3Stamped;
-using geometry_msgs::Vector3;
 using geometry_msgs::TransformStamped;
 using geometry_msgs::PointStamped;
 using geometry_msgs::Point;

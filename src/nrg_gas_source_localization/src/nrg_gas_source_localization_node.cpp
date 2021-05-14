@@ -13,7 +13,6 @@ namespace nrg_gas
 
 using nrg_gas_utilities::AnemometerMsg;
 using nrg_gas_utilities::GasConcentration;
-using geometry_msgs::Vector3Stamped;
 
 typedef message_filters::sync_policies::ApproximateTime<GasConcentration, AnemometerMsg> MySyncPolicy;
 typedef message_filters::Synchronizer<MySyncPolicy> Sync;
