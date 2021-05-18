@@ -48,11 +48,10 @@ Point NRGGas::calculateSourceTransform(const PointStamped& source, const Anemome
     t_in.z = map_to_anemometer.transform.translation.z - source.point.z;
 
     tf2::Quaternion q_wind_azimuth, q_base;
-    // TODO- why do we need 2*M_PI?
+    
     q_wind_azimuth.setRPY( 0, 
-                           0, 
-                           //2*M_PI-atan2(wind.vector.y, wind.vector.x)
-                           M_PI - wind.azimuth);       // Wind azimuth in anemometer frame: IN PROGRESS OF CONFORMING
+                           0,
+                           M_PI - wind.azimuth);       // Wind azimuth in anemometer frame:
     tf2::convert( map_to_anemometer.transform.rotation,
                   q_base );                                             // Anemometer rotation in map frame
     TransformStamped rot;
