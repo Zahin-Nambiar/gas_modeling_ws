@@ -52,7 +52,7 @@ Point NRGGas::calculateSourceTransform(const PointStamped& source, const Anemome
     q_wind_azimuth.setRPY( 0, 
                            0, 
                            //2*M_PI-atan2(wind.vector.y, wind.vector.x)
-                           wind.azimuth);       // Wind azimuth in anemometer frame: IN PROGRESS OF CONFORMING
+                           M_PI - wind.azimuth);       // Wind azimuth in anemometer frame: IN PROGRESS OF CONFORMING
     tf2::convert( map_to_anemometer.transform.rotation,
                   q_base );                                             // Anemometer rotation in map frame
     TransformStamped rot;
