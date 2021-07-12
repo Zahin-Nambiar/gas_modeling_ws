@@ -14,6 +14,8 @@ find_package(catkin REQUIRED COMPONENTS
   std_msgs
   nrg_gas_utilities
   tf2_geometry_msgs
+  visualization_msgs
+  interactive_markers
 )
 
 ## System dependencies are found with CMake's conventions
@@ -126,6 +128,7 @@ include_directories(
 ## Declare a C++ library
 add_library(${PROJECT_NAME}
   src/${PROJECT_NAME}/${PROJECT_NAME}.cpp
+  src/${PROJECT_NAME}/nrg_gas_multisource_localization.cpp
 )
 
 ## Add cmake target dependencies of the library
@@ -136,6 +139,7 @@ add_library(${PROJECT_NAME}
 ## Declare a C++ executable
 ## With catkin_make all packages are built within a single CMake context
 ## The recommended prefix ensures that target names across packages don't collide
+
 add_executable(${PROJECT_NAME}_node src/nrg_gas_source_localization_node.cpp)
 
 ## Rename C++ executable without prefix
@@ -150,6 +154,12 @@ add_executable(${PROJECT_NAME}_node src/nrg_gas_source_localization_node.cpp)
 
 ## Specify libraries to link a library or executable target against
 target_link_libraries(${PROJECT_NAME}_node
+  nrg_gas_source_localization
+  ${catkin_LIBRARIES}
+)
+
+add_executable(nrg_gas_multisource_localization_node src/nrg_gas_multisource_localization_node.cpp)
+target_link_libraries(nrg_gas_multisource_localization_node
   nrg_gas_source_localization
   ${catkin_LIBRARIES}
 )

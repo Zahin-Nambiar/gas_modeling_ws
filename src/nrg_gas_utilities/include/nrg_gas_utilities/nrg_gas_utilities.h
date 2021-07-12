@@ -15,7 +15,7 @@ double uniform_rn();
 
 double gaussian(double x, double mu, double sigma);
 
-visualization_msgs::Marker createSourceMarker(const nrg_gas_utilities::GasSource& source);
+visualization_msgs::Marker createSourceMarker(const nrg_gas_utilities::GasSource& source,const int source_number,const int total_source_number);
 
 } // namespace nrg_gas
 

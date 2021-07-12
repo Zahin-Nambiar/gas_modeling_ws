@@ -1,0 +1,21 @@
+{
+    "configurations": [
+        {
+            "browse": {
+                "databaseFilename": "",
+                "limitSymbolsToIncludedHeaders": true
+            },
+            "includePath": [
+                "/opt/ros/melodic/include/**",
+                "/usr/include/**",
+                "/home/administrator/philbart_ws/devel/include/**",
+                "/home/administrator/gas_modeling_ws/devel/include/**",
+                "/home/administrator/philbart_ws/src/**/include/**",
+                "/home/administrator/gas_modeling_ws/src/**/include/**"
+
+            ],
+            "name": "ROS"
+        }
+    ],
+    "version":4
+}

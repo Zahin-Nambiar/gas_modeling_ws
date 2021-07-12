@@ -42,7 +42,7 @@ double gaussian(double x, double mu, double sigma)
 }
 
 
-visualization_msgs::Marker createSourceMarker(const GasSource& source)
+visualization_msgs::Marker createSourceMarker(const GasSource& source, const int source_number, const int total_source_number)
 {
   visualization_msgs::Marker marker;
   
@@ -54,9 +54,10 @@ visualization_msgs::Marker createSourceMarker(const GasSource& source)
   marker.scale.z = 0.1;
   marker.type = visualization_msgs::Marker::CYLINDER;
   marker.action = visualization_msgs::Marker::ADD;
-  marker.color.r = 1;
+  marker.color.b = source_number/total_source_number;
+  marker.color.g = source_number/total_source_number;
+  //marker.color.b = source_number/total_source_number;
   marker.color.a = 1;
-  
   return marker;
 }
 

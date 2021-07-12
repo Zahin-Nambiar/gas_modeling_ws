@@ -12,6 +12,8 @@
 
 #include <ros/ros.h>
 #include <tf2_ros/transform_listener.h>
+#include <tf2_ros/transform_broadcaster.h>
+#include <tf2/LinearMath/Quaternion.h>
 
 #include <deque>
 
@@ -39,6 +41,7 @@ protected:
 
     tf2_ros::Buffer tfBuffer_;
     tf2_ros::TransformListener tfListener; 
+    tf2_ros::TransformBroadcaster tfb;
 
     WindParameters wp_;   
 

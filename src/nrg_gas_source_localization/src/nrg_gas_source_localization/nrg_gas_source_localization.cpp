@@ -160,7 +160,7 @@ visualization_msgs::MarkerArray NRGGasSourceLocalization::createParticleSetVisua
     MarkerArray particle_set_visualization;
     for( const auto& particle: particle_set_)
     {
-        particle_set_visualization.markers.push_back( createSourceMarker(particle.source) );
+        particle_set_visualization.markers.push_back( createSourceMarker(particle.source,1,1) );
         particle_set_visualization.markers.back().id = id;  //Each marker must have unique ID
         particle_set_visualization.markers.back().ns = "particles"; // Unique namespace 
         ++id;
