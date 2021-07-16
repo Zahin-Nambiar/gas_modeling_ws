@@ -16,6 +16,9 @@
 #include <tf2/LinearMath/Quaternion.h>
 
 #include <deque>
+#include <vector>
+
+using namespace std;  
 
 namespace nrg_gas
 {
@@ -43,7 +46,20 @@ protected:
     tf2_ros::TransformListener tfListener; 
     tf2_ros::TransformBroadcaster tfb;
 
-    WindParameters wp_;   
+    int pasquill_;  
+    int environment_;
+    vector<vector<float>> pasquill_data_urban_ {{0.22,0.0001,0.5,0.2,0.0,0.0},
+                                               {0.16,0.0001,0.5,0.12,0.0,0.0},
+                                               {0.11,0.0001,0.5,0.08,0.0002,0.5},
+                                               {0.08,0.0001,0.5,0.06,0.0015,0.5},
+                                               {0.06,0.0001,0.5,0.03,0.0003,1.0},
+                                               {0.04,0.0001,0.5,0.016,0.0003,1.0}};
+    vector<vector<float>> pasquill_data_country_ {{0.32,0.0004,0.5,0.24,0.001,0.5},
+                                                 {0.32,0.0004,0.5,0.24,0.001,0.5},
+                                                 {0.22,0.0004,0.5,0.2,0.0,0.0},
+                                                 {0.16,0.0004,0.5,0.14,0.0003,0.5},
+                                                 {0.11,0.0004,0.5,0.08,0.00015,0.5},
+                                                 {0.11,0.0004,0.5,0.08,0.00015,0.5}};
 
     std::deque<AnemometerMsg> wind_measurements_;
     std::deque<GasConcentration> gas_measurements_;

@@ -11,12 +11,8 @@ NRGGas::NRGGas()
 : private_nh_("~"),
   tfListener(tfBuffer_)
 {
-    private_nh_.param( "horizontal_dispersion_x", wp_.horizontal.x, 0.1 ); //TODO give these  guys default values 
-    private_nh_.param( "horizontal_dispersion_y", wp_.horizontal.y, 0.1 ); 
-    private_nh_.param( "horizontal_dispersion_z", wp_.horizontal.z, 0.1 ); 
-    private_nh_.param( "vertical_dispersion_x", wp_.vertical.x, 0.1 );
-    private_nh_.param( "vertical_dispersion_y", wp_.vertical.y, 0.1 );
-    private_nh_.param( "vertical_dispersion_z", wp_.vertical.z, 0.1 );
+    private_nh_.param( "pasquill_type", pasquill_, 0 ); //0=A, 1=B .... 
+    private_nh_.param( "environment_type", environment_, 0 ); //0=urban, 1=open country .... 
 }
 
 double NRGGas::calculateConcentration( const GasSource &gs, const AnemometerMsg &wind, TransformStamped map_to_anemometer ) const
@@ -30,8 +26,33 @@ double NRGGas::calculateConcentration( const GasSource &gs, const AnemometerMsg 
         return 0.0;
     }else{
         std::cout<<"Downwind"<<std::endl;
-        const double sy = wp_.horizontal.x*source_local_point.x*std::pow( 1.0+wp_.horizontal.y*source_local_point.x, -wp_.horizontal.z );
-        const double sz = wp_.vertical.x*source_local_point.x*std::pow( 1.0+wp_.vertical.y*source_local_point.x, -wp_.vertical.z );
+
+        float h_x; //horizontal_dispersion_x
+        float h_y; //horizontal_dispersion_y
+        float h_z; //horizontal_dispersion_z
+        float v_x; //vertical_dispersion_x
+        float v_y; //vertical_dispersion_y
+        float v_z; //vertical_dispersion_z
+
+        if (environment_ == 0) {
+            h_x = pasquill_data_urban_[pasquill_][0]; 
+            h_y = pasquill_data_urban_[pasquill_][1]; 
+            h_z = pasquill_data_urban_[pasquill_][2]; 
+            v_x = pasquill_data_urban_[pasquill_][3]; 
+            v_y = pasquill_data_urban_[pasquill_][4]; 
+            v_z = pasquill_data_urban_[pasquill_][5]; 
+        }
+        else {
+            h_x = pasquill_data_country_[pasquill_][0];
+            h_y = pasquill_data_country_[pasquill_][1];
+            h_z = pasquill_data_country_[pasquill_][2];
+            v_x = pasquill_data_country_[pasquill_][3];
+            v_y = pasquill_data_country_[pasquill_][4];
+            v_z = pasquill_data_country_[pasquill_][5];
+        }
+
+        const double sy = h_x*source_local_point.x*std::pow( 1.0+h_y*source_local_point.x, -h_z );
+        const double sz = v_x*source_local_point.x*std::pow( 1.0+v_y*source_local_point.x, -v_z );
         const double expy = std::exp(-( source_local_point.y*source_local_point.y )/( 2*sy*sy ));  
         const double expz = std::exp(-( source_local_point.z*source_local_point.z )/( 2*sz*sz ));
         const double norm = ( gs.rate/wind.speed )/( 2*M_PI*sy*sz );
