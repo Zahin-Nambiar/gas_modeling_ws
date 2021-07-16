@@ -1,26 +1,23 @@
 <?xml version="1.0"?>
-<launch> 
-     <arg name = "horizontal_dispersion_x"             default = "0.22"    />
-     <arg name = "horizontal_dispersion_y"             default = "0.0001"  />
-     <arg name = "horizontal_dispersion_z"             default = "0.5"     />
-     <arg name = "vertical_dispersion_x"               default = "0.2"     />    
-     <arg name = "vertical_dispersion_y"               default = "0.0"     />    
-     <arg name = "vertical_dispersion_z"               default = "0.0"     />   
+<launch>   
      <arg name = "number_of_particles"                 default = "2000"    />    
      <arg name = "minimum_number_of_particles"         default = "1000"    /> 
      <arg name = "measurement_noise"                   default = "1.0"     />      
      <arg name = "process_noise"                       default = "1.0"     />         
-     <arg name = "source_number"                       default = "2"     />
+     <arg name = "source_number"                       default = "1"     />
+     <arg name = "stationary_data_collection"          default = "1"     />
+     <arg name = "pasquill_type"                       default = "0"     />
+     <arg name = "environment_type"                    default = "1"     />
+     <!--Stationary data collection: 1 = PF will only update when robot is stationary 0 = PF will update continuously-->
+     <!--Pasquill Type:: A=0,B=1,C=2,D=3,E=4,F=5 for fownwind distances <10^4 m-->
+     <!--Environment Type:: urban=0,open country=1-->
+
 
      <node pkg="nrg_gas_source_localization"  type="nrg_gas_multisource_localization_node" name="nrg_gas_multisource_localization_node" output="screen">
 
           <!--NRGGas-->
-          <param name = "horizontal_dispersion_x"      value = "$(arg horizontal_dispersion_x)"     />  
-          <param name = "horizontal_dispersion_y"      value = "$(arg horizontal_dispersion_y)"     />  
-          <param name = "horizontal_dispersion_z"      value = "$(arg horizontal_dispersion_z)"     />  
-          <param name = "vertical_dispersion_x"        value = "$(arg vertical_dispersion_x)"       /> 
-          <param name = "vertical_dispersion_y"        value = "$(arg vertical_dispersion_y)"       />  
-          <param name = "vertical_dispersion_z"        value = "$(arg vertical_dispersion_z)"       />  
+          <param name = "pasquill_type"                value = "$(arg pasquill_type)"               />
+          <param name = "environment_type"             value = "$(arg environment_type)"            />
 
           <!--NRGGasMultisourceLocalization-->
           <rosparam param = "state_space_bounds_x">    [-100.0, 100.0]     </rosparam>
@@ -32,6 +29,8 @@
           <param name = "measurement_noise"            value = "$(arg measurement_noise)"           />  
           <param name = "process_noise"                value = "$(arg process_noise)"               />  
           <param name = "source_number"                value = "$(arg source_number)"               />
+          <param name = "stationary_data_collection"   value = "$(arg stationary_data_collection)"  /> 
+
      </node>
 
 </launch>

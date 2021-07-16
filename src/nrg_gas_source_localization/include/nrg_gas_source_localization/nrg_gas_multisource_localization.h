@@ -3,12 +3,13 @@
 
 #include <visualization_msgs/MarkerArray.h>
 #include <visualization_msgs/InteractiveMarkerInit.h>
-
+#include <nav_msgs/Odometry.h>
 #include <vector>
 
 namespace nrg_gas
 {
 
+using nav_msgs::Odometry;
 
 struct MultisourceParticle
 {
@@ -22,7 +23,7 @@ class NRGGasMultisourceLocalization: protected NRGGas
 {
 public:
     NRGGasMultisourceLocalization(const visualization_msgs::InteractiveMarkerInit& ss_hypotheses);
-    void update( const GasConcentration& gas_measurement, const AnemometerMsg& wind_measurement );
+    void update( const GasConcentration& gas_measurement, const AnemometerMsg& wind_measurement, const Odometry& odom_measurement);
 private:
     void initialize(const int& np);
     void reweight( const GasConcentration& gas_measurement, const AnemometerMsg& wind_measurement );
@@ -36,7 +37,7 @@ private:
     double R_; 
     double Q_;
     int sources_;
-    
+    int stationary_mode_;
     int np_min_;
 
     visualization_msgs::InteractiveMarkerInit ss_grids_;

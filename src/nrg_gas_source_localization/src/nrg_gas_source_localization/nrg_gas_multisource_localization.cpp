@@ -43,23 +43,48 @@ NRGGasMultisourceLocalization::NRGGasMultisourceLocalization(const visualization
                           "Number of particles is less than the minimum number of particles, resampling will be triggered by default" ); 
     private_nh_.param( "measurement_noise", R_, 1.0 ); 
     private_nh_.param( "process_noise", Q_, 1.0 );
-    private_nh_.param( "source_number", sources_, 1 );  
+    private_nh_.param( "source_number", sources_, 1 );
+    private_nh_.param( "stationary_data_collection", stationary_mode_, 0 );   
 
     
     initialize(np);
 }
 
 void NRGGasMultisourceLocalization::update( const GasConcentration& gas_measurement, 
-                                       const AnemometerMsg& wind_measurement )
+                                            const AnemometerMsg& wind_measurement, 
+                                            const Odometry& odom_measurement)
 {
     
     visualization_pub_.publish(createParticleSetVisualization());
 
-    reweight(gas_measurement, wind_measurement);
-    if( isDegenerate() )
-    {
-        resample();
+    float v_x = odom_measurement.twist.twist.linear.x;
+    float v_y = odom_measurement.twist.twist.linear.y;
+    float angular_speed = odom_measurement.twist.twist.angular.z;
+    
+    if (stationary_mode_ == 1){ //Only update when stationary
+        if(abs(v_x) + abs(v_y) + abs(angular_speed) < .05) {
+            std::cout<<"Stationary Mode:: Robot is NOT moving: Updating particle filter!"<<std::endl;
+            reweight(gas_measurement, wind_measurement);
+            if( isDegenerate() )
+            {
+                resample();
+            }
+        }
+        else {
+            std::cout<<"Stationary Mode:: Robot is moving: NOT updating particle filter!"<<std::endl;
+        }
     }
+
+    else { //Update at all times
+        std::cout<<"Dynamic Mode:: Updating particle filter!"<<std::endl;
+        reweight(gas_measurement, wind_measurement);
+        if( isDegenerate() )
+        {
+            resample();
+        }
+    }
+
+
     return;
 }
 
@@ -111,9 +136,10 @@ void NRGGasMultisourceLocalization::initialize( const int& np)
                 double roll, pitch, yaw;
                 m.getRPY(roll, pitch, yaw);
                 
-
+                //Search for rectangular prism bounds
                 float rect_x = 0.0;
                 float rect_y = 0.0;
+                float rect_z = 0.0;
 
                 for(auto& point:ss_grids_.markers[grid_random].controls[0].markers[0].points){
                     if(point.x > rect_x){
@@ -122,20 +148,18 @@ void NRGGasMultisourceLocalization::initialize( const int& np)
                     if(point.y > rect_y){
                         rect_y = point.y;
                     }
+                    if(point.z > rect_z){
+                        rect_z = point.z;
+                    }
                 }
-                
-
-            
-                
+                 
                 float x_anchor = ss_grids_.markers[grid_random].pose.position.x;
                 float y_anchor = ss_grids_.markers[grid_random].pose.position.y;
-
-    
 
                 auto rnv = uniform_rn(4);
                 float x = cos(yaw)*rnv[0]*rect_x - sin(yaw)*rnv[1]*rect_y + x_anchor;
                 float y = sin(yaw)*rnv[0]*rect_x + cos(yaw)*rnv[1]*rect_y + y_anchor;
-                float z = state_space_[2][0] + rnv[2]*(state_space_[2][1] - state_space_[2][0]);
+                float z = rnv[2]*(rect_z);
                 float rate = state_space_[3][0] + rnv[3]*(state_space_[3][1] - state_space_[3][0]);
 
                 
